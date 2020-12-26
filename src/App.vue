@@ -44,17 +44,24 @@
             <div class="relative">
                 
     
-                <input id="text" v-model="options.size" type="text" class="text-sm sm:text-base placeholder-gray-500 px-4 rounded-lg border border-gray-400 w-full py-2 focus:outline-none focus:border-blue-400" placeholder="Size" />
+                <input id="text" v-model="options.size" type="text" class="text-sm sm:text-base placeholder-gray-500 px-4 rounded-lg border border-gray-400 w-20 py-2 focus:outline-none focus:border-blue-400" placeholder="Size" />
             </div>
             </div>
 
             <!-- format -->
             <div class="flex flex-col mb-6">
-            <label for="format" class="mb-1 text-xs sm:text-sm tracking-wide text-gray-600">Format:</label>
-            <div class="relative">
+            <label for="format" class="mb-1 text-xs sm:text-sm tracking-wide text-gray-600">QR code output format:</label>
+            <div class="relative flex flex-row space-x-4 text-gray-600">
                 
-    
-                <input id="text" v-model="options.format" type="text" class="text-sm sm:text-base placeholder-gray-500 px-4 rounded-lg border border-gray-400 w-full py-2 focus:outline-none focus:border-blue-400" placeholder="Format" />
+                <div >   
+                    <input type="radio"  id="format-svg" value="svg" v-model="options.format">&nbsp;
+                    <label for="format-svg">Svg</label>
+                </div>
+                
+                <div>   
+                    <input type="radio" id="format-png" value="png" v-model="options.format">&nbsp;
+                    <label for="format-png">Png</label>
+                </div>
             </div>
             </div>
 
@@ -83,19 +90,60 @@
 
 
             <!-- gradient_color_start  -->
-            <div class="flex flex-col mb-6">
+            <div class="flex flex-col mb-6" v-if="options.gradient" >
             <label for="gradient_color_start" class="mb-1 text-xs sm:text-sm tracking-wide text-gray-600">Gradient Start Color:</label>
-            <div class="relative">
-                <input id="text" v-model="options.gradient_color_start" type="text" class="text-sm sm:text-base placeholder-gray-500 px-4 rounded-lg border border-gray-400 w-full py-2 focus:outline-none focus:border-blue-400" />
+            <div class="relative flex flex-row space-x-2">
+                
+                <input id="gradient_color_start_txt" v-model="options.gradient_color_start" type="text" class="text-sm sm:text-base placeholder-gray-500 px-4 rounded-lg border border-gray-400 w-25 py-2 focus:outline-none focus:border-blue-400" />
+                <input id="gradient_color_start" v-model="options.gradient_color_start" type="color" class="h-8" />
             </div>
             </div>
 
             <!-- gradient_color_end  -->
-            <div class="flex flex-col mb-6">
+            <div class="flex flex-col mb-6"  v-if="options.gradient">
             <label for="gradient_color_end" class="mb-1 text-xs sm:text-sm tracking-wide text-gray-600">Gradient End Color:</label>
-            <div class="relative">
-                <input id="text" v-model="options.gradient_color_end" type="text" class="text-sm sm:text-base placeholder-gray-500 px-4 rounded-lg border border-gray-400 w-full py-2 focus:outline-none focus:border-blue-400" />
+            <div class="relative flex flex-row space-x-2">
+                
+                <input id="gradient_color_end_txt" v-model="options.gradient_color_end" type="text" class="text-sm sm:text-base placeholder-gray-500 px-4 rounded-lg border border-gray-400 w-25 py-2 focus:outline-none focus:border-blue-400" />
+                <input id="gradient_color_end" v-model="options.gradient_color_end" type="color" class="h-8 " />
             </div>
+            </div>
+
+            <!-- gradient_type -->
+            <div class="flex flex-col mb-6"  v-if="options.gradient">
+            <label for="format" class="mb-1 text-xs sm:text-sm tracking-wide text-gray-600">QR code output format:</label>
+            <div class="relative flex flex-row space-x-4 text-gray-600">
+                
+                <div v-for="type in allowedGradientTypes">   
+                    
+                    <label :for="'gradient-'+ type">
+
+                    <input type="radio"  :id="'gradient-'+ type" :value="type" v-model="options.gradient_type">&nbsp;
+                    {{type}}</label>
+                </div>
+                
+            </div>
+            </div>
+
+
+            <!-- fg_color  -->
+            <div class="flex flex-col mb-6" v-if="!options.gradient" >
+            <label for="fg_color" class="mb-1 text-xs sm:text-sm tracking-wide text-gray-600">Foreground Color:</label>
+            <div class="relative flex flex-row space-x-2">
+                
+                <input id="fg_color_txt" v-model="options.fg_color" type="text" class="text-sm sm:text-base placeholder-gray-500 px-4 rounded-lg border border-gray-400 w-25 py-2 focus:outline-none focus:border-blue-400" />
+                <input id="fg_color" v-model="options.fg_color" type="color" class="h-8" />
+            </div>
+            </div>
+
+            <!-- bg_color  -->
+            <div class="flex flex-col mb-6">
+                <label for="bg_color" class="mb-1 text-xs sm:text-sm tracking-wide text-gray-600">Background Color:</label>
+                <div class="relative flex flex-row space-x-2">
+                    
+                    <input id="bg_color_txt" v-model="options.bg_color" type="text" class="text-sm sm:text-base placeholder-gray-500 px-4 rounded-lg border border-gray-400 w-25 py-2 focus:outline-none focus:border-blue-400" />
+                    <input id="bg_color" v-model="options.bg_color" type="color" class="h-8" />
+                </div>
             </div>
 
 
@@ -119,9 +167,12 @@
             <div class="flex flex-col mb-6">
             <label for="size" class="mb-1 text-xs sm:text-sm tracking-wide text-gray-600">Logo Size:</label>
             <div class="relative">
+                <div class="flex flex-row space-x-4">
+                    <input id="text" v-model="options.logo_size" type="text" class="text-sm sm:text-base placeholder-gray-500 px-4 rounded-lg border border-gray-400 w-20 py-2 focus:outline-none focus:border-blue-400" placeholder="0.2" />
+                    <input type="range" min="0.1" max="0.5" step="0.01" id="scale" v-model="options.logo_size">
+                </div>
                 
-    
-                <input id="text" v-model="options.logo_size" type="text" class="text-sm sm:text-base placeholder-gray-500 px-4 rounded-lg border border-gray-400 w-full py-2 focus:outline-none focus:border-blue-400" placeholder="0.2" />
+                
             </div>
             </div>
 
@@ -234,6 +285,7 @@
             prevGeneratedHash: null,
             
             secretKey: '',
+            allowedGradientTypes: ['horizontal', 'vertical', 'diagonal'],
             errorMsg: '',
             successMsg: '',
             errorHttpCode: null,
@@ -244,10 +296,13 @@
                 size: 800,
                 format: 'svg',
                 gradient: true,
+                gradient_type: 'diagonal',
                 validate: false,
-                gradient_color_start: 'FF0000',
-                gradient_color_end: '00FF00',
-                logo_size: 0.2
+                gradient_color_start: '#FF0000',
+                gradient_color_end: '#00FF00',
+                logo_size: 0.24,
+                fg_color: '#FF0000',
+                bg_color: '#FFFFFF'
             }
             
         }
@@ -361,11 +416,11 @@
     
     input:checked ~ .toggle__dot {
       transform: translateX(100%);
-      background-color: #e9bb24;
+      background-color: #777;
     }
     
     .bg-cus {
-      background-color: #fcfcfc;
+      background-color: #dcdcdc;
     }
     
     html {
