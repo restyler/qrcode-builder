@@ -133,7 +133,7 @@
                 <label class="flex flex-col cursor-pointer">
                     <div class="flex w-full justify-between">
                       <div class="text-gray-700 ">
-                        Validate result with QR reader:
+                        Throw fatal error (instead of warning) if barcode readability is low:
                       </div>
                       
                       <div class="ml-3 relative">
@@ -151,22 +151,45 @@
 
 
             <div class="flex w-full mt-10">
-              <button type="submit" class="flex items-center justify-center focus:outline-none text-white text-sm sm:text-base bg-blue-600 hover:bg-blue-700 rounded py-2 w-full transition duration-150 ease-in">
+              <button type="submit" :class="{'cursor-not-allowed': this.loading}" class="flex items-center justify-center focus:outline-none text-white text-sm sm:text-base bg-blue-600 hover:bg-blue-700 rounded py-2 w-full transition duration-150 ease-in">
                 <span class="mr-2 uppercase">Generate QR code</span>
                 <span>
-                  <svg class="h-6 w-6" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" stroke="currentColor">
+                  <svg v-if="!loading" class="h-6 w-6" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" stroke="currentColor">
                     <path d="M13 9l3 3m0 0l-3 3m3-3H8m13 0a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
+
+                  <svg v-else class="animate-spin h-6 w-6 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+
+                  <!--<svg v-else class="animate-spin h-6 w-6" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" stroke="currentColor">
+                    <path d="M13 9l3 3m0 0l-3 3m3-3H8m13 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>-->
 
                   </span>
               </button>
             </div>
 
-            <div class="flex mt-4 text-red-700" v-if="errorMsg">
-                Error {{ errorHttpCode }}: {{ errorMsg }}
+            <div v-if="errorMsg" class=" px-4 py-3 my-4 leading-normal text-red-700 bg-red-100 rounded-lg flex space-x-2 flex-row" role="alert" >
+                <span class="inline-block mt-1 items-center">
+                    <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" fill-rule="evenodd"></path></svg>
+                  </span>
+                  
+                  <span class="">Error #{{errorHttpCode}}: 
+                {{ errorMsg }}</span>
             </div>
-            <div class="flex mt-4 text-green-700" v-if="successMsg">
-                {{ successMsg }}
+            <div class="px-4 py-3 my-4 leading-normal text-green-700 bg-green-100 rounded-lg flex space-x-2 flex-row" v-if="successMsg">
+                <span class="inline-block mt-1 items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" class="w-4 h-4 fill-current">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                    </svg>
+                </span>
+                
+                <span>
+                    {{ successMsg }}
+                </span>
+                
             </div>
           </form>
         </div>
@@ -174,11 +197,24 @@
       </div>
 
       <div class="flex flex-col  px-4 sm:px-6 md:px-8 lg:px-10 py-8  w-1/2 max-w-lg">
-          <div v-if="isReadable === false" class="my-4 text-sm bg-orange-lightest border-l-4 border-orange text-orange-dark p-4" role="alert">
-            <p class="font-bold">Be Warned</p>
-            <p>This QR code may be not readable, please double check it using any QR code scanner!</p>
-          </div>
-          <canvas style="width: 500px;height:500px;border:1px solid #ccc" id="canvas1"></canvas>
+
+        
+
+
+        <canvas style="width: 500px;height:500px;border:1px solid #ccc" id="canvas1"></canvas>
+
+        <div v-if="isReadable === false" class=" px-4 py-3 my-4 leading-normal text-orange-700 bg-orange-100 rounded-lg flex space-x-2 flex-row" role="alert" >
+            <span class="inline-block mt-1 items-center">
+                <svg class="w-4 h-4 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" >
+                <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+                </svg>
+
+            <!--<svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" fill-rule="evenodd"></path></svg>-->
+            </span>
+        
+            <span>This QR code may be not readable, please double check it using any QR code scanner!</span>
+        </div>
+
       </div>
   </div>
   
@@ -202,6 +238,7 @@
             successMsg: '',
             errorHttpCode: null,
             isReadable: null,
+            loading: false,
             options: {
                 text: 'https://google.com',
                 size: 800,
@@ -232,6 +269,8 @@
             }
             formData.append("logo_upload", imagefile.files[0]);
 
+            this.loading = true;
+
             axios.post('https://qrcode-supercharged.p.rapidapi.com/', formData, {
                 headers: {
                     'x-rapidapi-key': this.secretKey,
@@ -242,27 +281,35 @@
                 let imgBase64 = Buffer.from(response.data, 'binary').toString('base64');
                 //console.log(imgBase64);
                 this.successMsg = 'QR code generated successfully!'
-
+                window.scrollTo({ top: 0, behavior: 'smooth' });
                 if(response.headers['x-qrcode-readable'] == '0') {
                     this.isReadable = false;
                 } else {
                     this.isReadable = true;
                 }
-                
+                this.errorMsg = '';
                 this.draw("data:"+response.headers["content-type"] + ";base64,"+imgBase64)
             })
             .catch( (error) => {
+                this.successMsg = '';
                 if (error.response && error.response.status) {
-                    this.errorMsg = error.response.data;
+                    // rapidAPI throws json errors
+                    if (error.response.headers['content-type'] == 'application/json' && error.response.data.message) {
+                        this.errorMsg = error.response.data.message;
+                    } else {
+                        this.errorMsg = error.response.data;
+                    }
+                    
                     this.errorHttpCode = error.response.status;
                 }
                 
             })
             .then(() => {
                 this.msgTimer = setTimeout(() => {
-                    this.successMsg = ''
-                    this.errorMsg = ''
-                }, 3000)
+                    //this.successMsg = ''
+                    //this.errorMsg = ''
+                }, 14000)
+                this.loading = false
             });
 
             
