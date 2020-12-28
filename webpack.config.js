@@ -68,6 +68,10 @@ module.exports = (env = {}) => ({
               .replace('main.css', 'main.css?ts=' + Date.now())
               .replace('main.js', 'main.js?ts=' + Date.now());
           } 
+        },
+        { 
+          from: 'qrcode-placeholder.svg', 
+          to: 'qrcode-placeholder.svg'
         }
       ],
       options: {

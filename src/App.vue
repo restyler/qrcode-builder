@@ -29,7 +29,7 @@
     
 
 
-    <div class="font-medium self-center text-xl sm:text-xl uppercase text-gray-800">QR code builder with API automation</div>
+    <div class="font-medium md:text-2xl text-xl uppercase text-gray-800">QR code builder with API automation</div>
     <div class="text-gray-600">This is a GUI for <b>
       <a target="blank" class="text-indigo-600 text-bold underline hover:text-indigo-900" href="https://rapidapi.com/restyler/api/qrcode-supercharged">
         qrcode-supercharged</a></b> engine.
@@ -38,7 +38,14 @@
     <options-form v-model:api-options="options" v-model:api-secret-key="secretKey" :submit="generate" />
   </template>
   <template #second>
+    <div v-if="!prevGeneratedHash">
+      <img src="qrcode-placeholder.svg" />
+      <div class="px-4 py-3 my-4  text-sm text-gray-600 bg-gray-100 rounded-lg">
+          Generate your QR code by submitting the form.
+      </div>
 
+    </div>
+    
     <div id="canvas1-wrapper" ref="canvas1-wrapper">
       <canvas ref="canvas1" :style="{width: canvasSize + 'px', height: canvasSize + 'px'}" ></canvas>
     </div>
@@ -141,7 +148,7 @@
                 gradient_type: 'diagonal',
                 validate: false,
                 gradient_color_start: '#FF0000',
-                gradient_color_end: '#00FF00',
+                gradient_color_end: '#00E1FF',
                 logo_size: 0.24,
                 fg_color: '#FF0000',
                 bg_color: '#FFFFFF',
@@ -205,8 +212,8 @@
                 let imgBase64 = Buffer.from(response.data, 'binary').toString('base64');
                 //console.log(imgBase64);
                 this.successMsg = 'QR code generated successfully!'
-                //window.scrollTo({ top: 0, behavior: 'smooth' });
-                this.$refs['canvas1-wrapper'].scrollIntoView({behavior: 'smooth'});
+                
+                
 
                 if(response.headers['x-qrcode-readable'] == '0') {
                     this.isReadable = false;
@@ -216,6 +223,10 @@
                 this.errorMsg = '';
                 this.prevGeneratedSizeBytes = response.data.byteLength;
                 this.draw("data:"+response.headers["content-type"] + ";base64,"+imgBase64)
+
+              
+                
+
             })
             .catch( (error) => {
                 this.successMsg = '';
@@ -276,6 +287,10 @@
                 //canvas.height = image.height;
 
                 ctx.drawImage(image, 0, 0, image.width, image.height, 0, 0, self.canvasSize, self.canvasSize);
+
+                
+                self.$refs['canvas1-wrapper'].scrollIntoView({behavior: 'smooth'});
+                
                 //ctx.drawImage(image, 0, 0, 200, 400, 0, 0, 200, 200);
             };
             //console.log('img6733', imgBase64);
