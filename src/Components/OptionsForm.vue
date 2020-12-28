@@ -42,14 +42,50 @@
               
               <div >   
                   <input type="radio"  id="format-svg" value="svg" v-model="options.format">&nbsp;
-                  <label for="format-svg">Svg</label>
+                  <label for="format-svg">svg</label>
               </div>
               
               <div>   
                   <input type="radio" id="format-png" value="png" v-model="options.format">&nbsp;
-                  <label for="format-png">Png</label>
+                  <label for="format-png">png</label>
               </div>
           </div>
+          </div>
+
+          <!-- block style -->
+          <div class="flex flex-col mb-6">
+            <label for="format" class="mb-1 text-xs sm:text-sm tracking-wide text-gray-600">Block style:</label>
+            <div class="relative flex flex-row space-x-4 text-gray-600">
+                
+                <div v-for="blockStyle in allowedBlockStyles">   
+                    <input type="radio"  :id="'block-' + blockStyle" :value="blockStyle" v-model="options.block_style">&nbsp;
+                    <label :for="'block-' + blockStyle">{{ blockStyle }}</label>
+                </div>
+                
+            </div>
+          </div>
+
+          <!-- block size -->
+          <div class="flex flex-col mb-6" v-if="options.block_style == 'dot'">
+            <label for="block_size" class="mb-1 text-xs sm:text-sm tracking-wide text-gray-600">Block Size:</label>
+            <div class="relative">
+              <div class="flex flex-row space-x-4">
+                <input id="block_size" v-model="options.block_size" type="text" class="text-sm sm:text-base placeholder-gray-500 px-4 rounded-lg border border-gray-400 w-20 py-2 focus:outline-none focus:border-blue-400" placeholder="0.2" />
+                <input type="range" min="0.1" max="0.99" step="0.01" id="scale-block-size" v-model="options.block_size">
+              </div>      
+            </div>
+          </div>
+          
+          <!-- eye style -->
+          <div class="flex flex-col mb-6">
+            <label for="format" class="mb-1 text-xs sm:text-sm tracking-wide text-gray-600">Eye style:</label>
+            <div class="relative flex flex-row space-x-4 text-gray-600">
+                
+              <div v-for="eyeStyle in allowedEyeStyles">   
+                <input type="radio"  :id="'eye-' + eyeStyle" :value="eyeStyle" v-model="options.eye_style">&nbsp;
+                <label :for="'eye-' + eyeStyle">{{ eyeStyle }}</label>
+              </div>
+            </div>
           </div>
 
           <!-- gradient -->
@@ -241,11 +277,11 @@
 
         </form>
       </div>
-</template>
-<script>
+  </template>
+  <script>
     export default {
         props: { 
-            apiOptions: Object, 
+            apiOptions: Object,
             apiSecretKey: String,
             apiLoading: Boolean,
             submit: Function
@@ -256,6 +292,8 @@
                 options: this.apiOptions,
                 //secretKey: this.apiSecretKey,
                 allowedGradientTypes: ['horizontal', 'vertical', 'diagonal'],
+                allowedBlockStyles: ['round', 'square', 'dot'],
+                allowedEyeStyles: ['square', 'circle']
             }
         },
         methods: {
