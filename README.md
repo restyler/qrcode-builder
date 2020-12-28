@@ -18,3 +18,6 @@ Built with Vue 3 (options API) & Tailwind.
 
 
 ![logo](https://user-images.githubusercontent.com/775507/103216892-9743e880-4930-11eb-8333-d7b508399fed.gif)
+
+
+This is a production-ready project, but it was built during one weekend, so component structure is definitely not perfect,  e.g. there is quite a room for HTML classes deduplication.
