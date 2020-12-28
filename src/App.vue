@@ -1,5 +1,5 @@
 <template>
-    <!--<link rel="stylesheet" href="https://kit-pro.fontawesome.com/releases/v5.15.1/css/pro.min.css" />-->
+
 
 <div class="min-h-screen flex flex-col items-center justify-center bg-gray-300">
   <div class="flex flex-row shadow-md bg-white rounded-md mt-20 w-full max-w-6xl">
