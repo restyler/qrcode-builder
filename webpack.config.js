@@ -72,6 +72,10 @@ module.exports = (env = {}) => ({
         { 
           from: 'qrcode-placeholder.svg', 
           to: 'qrcode-placeholder.svg'
+        },
+        { 
+          from: 'favicon.svg', 
+          to: 'favicon.svg'
         }
       ],
       options: {
