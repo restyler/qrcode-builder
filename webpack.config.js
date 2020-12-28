@@ -58,11 +58,22 @@ module.exports = (env = {}) => ({
   plugins: [
     new CopyPlugin({
       patterns: [
-        { from: 'index.html', to: 'index.html' }
+        { 
+          from: 'index.html', 
+          to: 'index.html', 
+          transform(content) {
+            if (!env.prod) return content;
+
+            return content.toString()
+              .replace('main.css', 'main.css?ts=' + Date.now())
+              .replace('main.js', 'main.js?ts=' + Date.now());
+          } 
+        }
       ],
       options: {
         concurrency: 100,
       },
+      
     }),
     new VueLoaderPlugin(),
     new MiniCssExtractPlugin({
