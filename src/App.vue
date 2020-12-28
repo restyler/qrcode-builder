@@ -206,7 +206,7 @@
                 //console.log(imgBase64);
                 this.successMsg = 'QR code generated successfully!'
                 //window.scrollTo({ top: 0, behavior: 'smooth' });
-                this.$refs['canvas1-container'].scrollIntoView({behavior: 'smooth'});
+                this.$refs['canvas1-wrapper'].scrollIntoView({behavior: 'smooth'});
 
                 if(response.headers['x-qrcode-readable'] == '0') {
                     this.isReadable = false;
@@ -231,6 +231,8 @@
                     }
                     
                     this.errorHttpCode = error.response.status;
+                } else {
+                  console.error(error);
                 }
                 
             })

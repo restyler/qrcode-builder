@@ -251,7 +251,6 @@
             submit: Function
         },
         data () {
-            console.log(this.options)
             return {
                 // @TODO: fix this with props and emit
                 options: this.apiOptions,
